@@ -1,0 +1,31 @@
+{
+  "name": "termagotchi",
+  "version": "0.0.1",
+  "description": "A pet in your terminal - AND in your broser!",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fenwick67/termagotchi.git"
+  },
+  "keywords": [
+    "virtual-pet",
+    "virtual",
+    "pet",
+    "copyright-infringement"
+  ],
+  "author": "Drew Harwell",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/fenwick67/termagotchi/issues"
+  },
+  "homepage": "https://github.com/fenwick67/termagotchi#readme",
+  "dependencies": {
+    "github-api": "^2.3.0",
+    "lodash": "^4.13.1",
+    "request": "^2.72.0",
+    "xplat-cli": "0.0.2"
+  }
+}
