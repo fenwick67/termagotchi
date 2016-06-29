@@ -4,7 +4,8 @@
   "description": "A pet in your terminal - AND in your broser!",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "browser-build": "browserify ./index.js > ./browser/app.js"
   },
   "repository": {
     "type": "git",
