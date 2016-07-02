@@ -2,11 +2,13 @@
 
 var GitHub = require('github-api');// this is undocumented :((
 var request = require('request');
-var gistManager = require('./gist-manager');
-var prefSaver = require('./pref-saver');
+var gistManager = require('../lib/gist-manager');
+var prefSaver = require('../lib/pref-saver');
 var util = require('util');
+var chalk = require('chalk');
+chalk.enabled=true;
 
-module.exports = function(args,done){
+module.exports = function(terma,done){
   var p = this;
   
   gistSetup();
@@ -15,21 +17,25 @@ module.exports = function(args,done){
   
   function gistSetup(){
     p.prompt(
-      [ '(just type "Q" at any time and hit "Enter" to quit)',
-        "Now... let's get you set up with a Github Gist.",
+      [ '',
+        '(just type "Q" at any time and hit "Enter" to quit)',
         "",
-        "Gists are where Termas live when you're not interacting with them on your computer.",
-        "Enter a github Personal Access Token to continue.",
-        "What's that?  Check out https://help.github.com/articles/creating-an-access-token-for-command-line-use/",
-        "Be sure to allow the 'Gist' permission with it.",
-        '',
-        "(this is an open source project.  If you don't trust the author with your access tokens, you can read the code yourself at https://github.com/fenwick67/termagotchi)",
+        "Github Gists are where Termas live when you're not at your computer.",
+        " and be sure to allow the 'Gist' permission with it.",        
+        chalk.bold.green("Enter a github Personal Access Token to continue."),
+        chalk.gray("What's that?  Check out https://help.github.com/articles/creating-an-access-token-for-command-line-use/"),
         ''
       ].join('\n'),gotPat
     )
   }
   
   function gotPat(res){
+    
+    if (!res){
+      p.writeln(chalk.green('\n\nLet\'s try that again...'));
+      gistSetup();
+      return;
+    }
     
     p.write('\nOkay.  Now we will see if you already have a terma gist available...\n')
     var token = res.replace(/\s/i,'');

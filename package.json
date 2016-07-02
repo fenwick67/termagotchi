@@ -24,9 +24,14 @@
   },
   "homepage": "https://github.com/fenwick67/termagotchi#readme",
   "dependencies": {
+    "chalk": "^1.1.3",
     "github-api": "^2.3.0",
     "lodash": "^4.13.1",
+    "mkdirp": "^0.5.1",
     "request": "^2.72.0",
-    "xplat-cli": "0.0.3"
+    "xplat-cli": "*"
+  },
+  "browser": {
+    "fs": "browserify-fs"
   }
 }

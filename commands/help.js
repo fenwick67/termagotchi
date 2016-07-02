@@ -5,9 +5,7 @@ var cmds = [
   ['help','show this'],
   ['play','Play with your Terma'],
   ['feed','feed your Terma'],
-  ['clean','clean up after your Terma\'s mess'],
   ['status','Check how your Terma is doing'],
-  ['setup','set up your terma']
 ];
 
 var cmdString = '';
