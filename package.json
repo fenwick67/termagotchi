@@ -24,6 +24,7 @@
   },
   "homepage": "https://github.com/fenwick67/termagotchi#readme",
   "dependencies": {
+    "burlap-canvas": "0.0.3",
     "chalk": "^1.1.3",
     "github-api": "^2.3.0",
     "lodash": "^4.13.1",
