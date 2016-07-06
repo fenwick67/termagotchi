@@ -4,28 +4,42 @@ var Canvas = require('burlap-canvas')
 var drawTerma = require('../lib/draw-terma');
 var _ = require('lodash');
 var util = require('util');
+var alerter = require('../lib/alerter');
+var Terma = require('../lib/terma');
 
 var TERMA_X = 1;
 var TERMA_Y = 1;
 
 module.exports = function(terma,program,done){
+  
+  var terma = terma;
     
   console.log(util.inspect(program.cli));
   
   var canvas = new Canvas({
     write:program.write,
     getWidth: function(){return process.stdout?process.stdout.columns:100},//TODO fix this in xplat-cli so we can get height/width.  Pass an object in the constructor.
-    getHeight: function(){return process.stdout?process.stdout.rows:100}  
+    getHeight: function(){return process.stdout?process.stdout.rows:50}  
   });
   
   var ctx = canvas;
   
-  // draw terma
+  function update(){// this is like a "tick" in a conventional game engine
+    if (!terma.status.alive){
+      var old = terma.name;
+      var newTerma = new Terma();
+      _.extend(terma,newTerma);//TODO: does extend really work like this?  We'll see.
+      alert('you killed '+old+'!  But dont worry too much, we made a new terma for you!  Press Return to continue.');
+    }      
+    draw();
+  }
+  
+  // draw terma et cetera (without clearing)
   function draw(){
-    //ctx.clear();
     drawTerma(canvas,terma,TERMA_X,TERMA_Y);
     drawButtons(position);    
     drawHelpIfEnabled();
+    drawAlertIfShowing();
   }
   
   var helpShown = false;
@@ -46,24 +60,41 @@ module.exports = function(terma,program,done){
     ctx.drawBorderedRect(1,1,40,20,"Some help will go here.  Press H to close.");
   }
   
+  
+  var alertActive = false;
+  var alertText = '';
+  function alert(text){
+    alertText = text;
+    alertActive = true;
+    alerter(ctx,text);
+    program.once('data',function(d){//dismiss on keypress
+      alertActive = false;
+      ctx.clear();
+      draw();
+    });
+  }
+  function drawAlertIfShowing(){
+    if (alertActive){
+      alerter(ctx,alertText);
+    }
+  }
+  
+  
   var position = [4,0];// which button selected (row,column)
   
-  var buttons = [// butons to show and which functions they run
+  var buttons = [// butons to show and which functions they run, hotkeys
     [
-      ["Feed",fs],
-      ["Play",fs],
-      ["Nap",fs],
-      ["Toilet",fs],
-      ["Bath",fs]
+      ["(F)eed",terma.feed,'f'],
+      ["(P)lay",terma.play,'p'],
+      ["(N)ap",terma.sleep,'n'],
+      ["(T)oilet",terma.toilet,'t'],
+      ["(B)ath",terma.bath,'b']
     ],
     [
-      ["help",toggleHelp]
+      ["(H)elp",toggleHelp,'h']
     ]
   ];
-
-  function fs(){}
   
-
   function drawButtons(){
     
     var BUTTON_ROW_WIDTH = 70;
@@ -126,6 +157,7 @@ module.exports = function(terma,program,done){
     
   }
      
+  // extra commands
   var ESC = String.fromCharCode(27);
   var ENTER = '\r';
   var ARROW_UP = ESC + '[A';
@@ -136,10 +168,8 @@ module.exports = function(terma,program,done){
   
   //listen for keypresses
   program.on('data',function(str){
-    console.log(str);
-    if (contains(str,'h')){
-      toggleHelp();
-    }else if (contains(str,ARROW_LEFT)){
+    //console.log(str);
+    if (contains(str,ARROW_LEFT)){
       position[1] = position [1] - 1;
       clipPosition();
     }else if (contains(str,ARROW_RIGHT)){
@@ -161,12 +191,29 @@ module.exports = function(terma,program,done){
         f();
       }else{
         console.log('cursor position not valid');
+      }      
+    }else{//look for hotkeys last
+      var exec = false;
+      buttons.forEach(function(row){
+        row.forEach(function(entry){
+          if (contains(str,entry[2])){
+            //run this
+            exec = entry[1];
+          }
+        });
+      });
+      
+      if (exec){
+        exec();
       }
-      
-    }else{
-      
     }
-    draw();
+    
+    /*  redraw everything every time... but note that 
+        we don't clear the context.. so there 
+        shouldn't be any flickering.
+    */
+    
+    update();
   }); 
   
   function clipPosition(){//loop position around when messing with it.
@@ -196,6 +243,8 @@ module.exports = function(terma,program,done){
        
   }
     
+  //clear ctx whenever entering this
+  ctx.clear();  
 }
 
 function contains(a,b){//string a contains b

@@ -32,8 +32,14 @@ synchronizer.getTerma(function(er,terma){
 function run(){
   cli
   .delimiter('~*~')
+  .command('intro',function(args,done){
+    //do something here, then..
+    this.write('Press "Enter" to run Terma...');
+    var p = this;
+    p.cli.run('main');
+  })
   .command('main',function(args,done){
     main(myTerma,this,done); 
   })
-  .run('main')
+  .run('intro')
 }
