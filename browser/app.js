@@ -5481,8 +5481,8 @@ module.exports = function(terma,program,done){
   
   var canvas = new Canvas({
     write:program.write,
-    getWidth: function(){return process.stdout?process.stdout.columns:100},//TODO fix this in xplat-cli so we can get height/width.  Pass an object in the constructor.
-    getHeight: function(){return process.stdout?process.stdout.rows:50}  
+    getWidth: function(){return process.stdout?process.stdout.columns:69},//TODO fix this in xplat-cli so we can get height/width.  Pass an object in the constructor.
+    getHeight: function(){return process.stdout?process.stdout.rows:40}  
   });
   
   var ctx = canvas;
@@ -5562,7 +5562,7 @@ module.exports = function(terma,program,done){
     
     var BUTTON_ROW_WIDTH = 70;
     var BUTTON_X = 2;
-    var BUTTON_Y = 34;
+    var BUTTON_Y = 25;
     var BUTTON_SPACING = 1;
     var BUTTON_HEIGHT = 3;
         
@@ -5935,6 +5935,8 @@ module.exports = function(canvas,terma,x,y){
   //lala
   return;  
 }
+
+
 
 var stats = ['comfort','bladder','energy','fun','stomach'];
 
